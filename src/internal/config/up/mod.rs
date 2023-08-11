@@ -21,6 +21,9 @@ pub use asdf_base::UpConfigAsdfBase;
 pub use asdf_base::ASDF_BIN;
 pub use asdf_base::ASDF_PATH;
 
+pub mod python;
+pub use python::UpConfigPython;
+
 pub mod error;
 pub use error::UpError;
 

@@ -18,6 +18,7 @@ use crate::internal::cache::UpEnvironments;
 use crate::internal::cache::UpVersion;
 use crate::internal::config::up::tool::UpConfigTool;
 use crate::internal::config::up::utils::run_progress;
+use crate::internal::config::up::utils::version_from_config;
 use crate::internal::config::up::utils::PrintProgressHandler;
 use crate::internal::config::up::utils::ProgressHandler;
 use crate::internal::config::up::utils::RunConfig;
@@ -162,18 +163,7 @@ impl UpConfigAsdfBase {
         tool_url: Option<String>,
         config_value: Option<&ConfigValue>,
     ) -> Self {
-        let mut version = "latest".to_string();
-        if let Some(config_value) = config_value {
-            if let Some(value) = config_value.as_str() {
-                version = value.to_string();
-            } else if let Some(value) = config_value.as_float() {
-                version = value.to_string();
-            } else if let Some(value) = config_value.as_integer() {
-                version = value.to_string();
-            } else if let Some(value) = config_value.get("version") {
-                version = value.as_str().unwrap().to_string();
-            }
-        }
+        let version = version_from_config(config_value);
 
         UpConfigAsdfBase {
             tool: tool.to_string(),
@@ -346,7 +336,7 @@ impl UpConfigAsdfBase {
         Ok(())
     }
 
-    fn version(
+    pub(super) fn version(
         &self,
         progress_handler: Option<Box<&dyn ProgressHandler>>,
     ) -> Result<&String, UpError> {

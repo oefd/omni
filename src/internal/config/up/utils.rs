@@ -12,6 +12,7 @@ use tokio::runtime::Runtime;
 use tokio::time::Duration;
 
 use crate::internal::config::up::UpError;
+use crate::internal::config::ConfigValue;
 use crate::internal::user_interface::StringColor;
 
 pub struct RunConfig {
@@ -464,4 +465,16 @@ impl ProgressHandler for PrintProgressHandler {
     fn show(&self) {
         // do nothing
     }
+}
+
+pub fn version_from_config(config: Option<&ConfigValue>) -> String {
+    config
+        .and_then(|value| {
+            value
+                .as_str()
+                .or(value.as_float().map(|v| v.to_string()))
+                .or(value.as_integer().map(|v| v.to_string()))
+                .or(value.get("version").and_then(|version| version.as_str()))
+        })
+        .unwrap_or("latest".to_string())
 }

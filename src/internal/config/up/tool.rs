@@ -6,6 +6,7 @@ use crate::internal::config::up::UpConfigBundler;
 use crate::internal::config::up::UpConfigCustom;
 use crate::internal::config::up::UpConfigGolang;
 use crate::internal::config::up::UpConfigHomebrew;
+use crate::internal::config::up::UpConfigPython;
 use crate::internal::config::up::UpError;
 use crate::internal::config::ConfigValue;
 
@@ -22,7 +23,7 @@ pub enum UpConfigTool {
     // TODO: Kotlin(UpConfigAsdfBase), // KOTLIN_HOME
     Nodejs(UpConfigAsdfBase),
     // TODO: Pacman(UpConfigPacman),
-    Python(UpConfigAsdfBase),
+    Python(UpConfigPython),
     Ruby(UpConfigAsdfBase),
     Rust(UpConfigAsdfBase),
 }
@@ -52,8 +53,7 @@ impl UpConfigTool {
             "nodejs" | "node" | "npm" => Some(UpConfigTool::Nodejs(
                 UpConfigAsdfBase::from_config_value("nodejs", config_value),
             )),
-            "python" => Some(UpConfigTool::Python(UpConfigAsdfBase::from_config_value(
-                "python",
+            "python" => Some(UpConfigTool::Python(UpConfigPython::from_config_value(
                 config_value,
             ))),
             "ruby" => Some(UpConfigTool::Ruby(UpConfigAsdfBase::from_config_value(
@@ -114,7 +114,7 @@ impl UpConfigTool {
                 }
             }
             UpConfigTool::Nodejs(config) => Some(config),
-            UpConfigTool::Python(config) => Some(config),
+            UpConfigTool::Python(config) => Some(config.asdf_base()),
             UpConfigTool::Ruby(config) => Some(config),
             UpConfigTool::Rust(config) => Some(config),
             _ => None,
