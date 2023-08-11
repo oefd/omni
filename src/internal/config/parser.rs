@@ -155,7 +155,7 @@ impl OmniConfig {
         match config_value.get("env") {
             Some(value) => {
                 for (key, value) in value.as_table().unwrap() {
-                    env_config.insert(key.to_string(), value.as_str().unwrap().to_string());
+                    env_config.insert(key.to_string(), stringify(&value));
                 }
             }
             None => {}
@@ -846,5 +846,18 @@ impl SuggestCloneRepositoryConfig {
         }
 
         None
+    }
+}
+
+fn stringify(value: &ConfigValue) -> String {
+    if let Some(str) = value.as_str() {
+        str.to_string()
+    } else {
+        value
+            .as_float()
+            .map(|v| v.to_string())
+            .or(value.as_integer().map(|v| v.to_string()))
+            .or(value.as_bool().map(|v| v.to_string()))
+            .unwrap()
     }
 }
